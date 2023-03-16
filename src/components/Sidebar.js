@@ -3,7 +3,7 @@ import { FaTimes } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import {links} from '../linkData'
-import CartButtons from './CartButtons'
+import CartButtons from './Cart/CartButtons'
 import { useProductsContext } from '../context/products_context'
 
 export default function Sidebar() {

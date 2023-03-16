@@ -2,10 +2,12 @@ import React from 'react'
 import { FaShoppingCart } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { useProductsContext } from '../context/products_context'
+import { useCartContext } from '../../context/cart_context'
+import { useProductsContext } from '../../context/products_context'
 
 export default function CartButtons() {
   const { closeSidebar } = useProductsContext()
+    const { total_items } = useCartContext()
   
   return (
     <Wrapper className='cart-btn-wrapper'>
@@ -13,6 +15,7 @@ export default function CartButtons() {
         Cart
         <span className='cart-container'>
           <FaShoppingCart />
+           <span className='cart-value'>{total_items}</span>
         </span>
       </Link>
       
@@ -41,6 +44,21 @@ const Wrapper = styled.div`
       height: 1.6rem;
       margin-left: 5px;
     }
+  }
+  .cart-value {
+    position: absolute;
+    top: -10px;
+    right: -16px;
+    background: var(--clr-primary-5);
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    color: var(--clr-white);
+    padding: 12px;
   }
 
 `

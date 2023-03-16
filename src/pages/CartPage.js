@@ -1,20 +1,41 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
-import CartColumns from '../components/CartColumns'
-import CartItem from '../components/CartItem'
 
-export default function CartPage() {
+import React from 'react'
+import styled from 'styled-components'
+import { useCartContext } from '../context/cart_context'
+import { Link } from 'react-router-dom'
+import CartContent from '../components/Cart/CartContent'
+
+const CartPage = () => {
+  const { cart } = useCartContext()
+  if (cart.length < 1) {
+    return (
+      <Wrapper className='page-100'>
+        <div className='empty'>
+          <h2>Your cart is empty</h2>
+          <Link to='/' className='btn'>
+            fill it
+          </Link>
+        </div>
+      </Wrapper>
+    )
+  }
   return (
-    <article className='cart-center'>
-      <CartColumns/>
-      <CartItem/>
-    </article>
+    <main>
+      <Wrapper className='page'>
+       <CartContent/>
+      </Wrapper>
+    </main>
   )
 }
 
-const Cart = styled.article`
- .cart-center {
-  margin-top: 6rem;
- }
+const Wrapper = styled.main`
+  .empty {
+    text-align: center;
+    h2 {
+      margin-bottom: 1rem;
+      text-transform: none;
+    }
+  }
 `
+
+export default CartPage

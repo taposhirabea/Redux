@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { links } from '../linkData'
 import styled from 'styled-components'
 import {FaBars}  from 'react-icons/fa'
-import CartButtons from './CartButtons'
+import CartButtons from './Cart/CartButtons'
 import { useProductsContext } from '../context/products_context'
 
 const Nav = () => {
