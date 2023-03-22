@@ -4,38 +4,73 @@ import {
   COUNT_CART_TOTALS,
   REMOVE_CART_ITEM,
   TOGGLE_CART_ITEM_AMOUNT,
+  INCREASE,
+  DECREASE,
+  REMOVE
 } from '../actions'
 
 const cart_reducer = (state, action) => {
-  if (action.type === ADD_TO_CART) {
-    const { id, color, amount, product } = action.payload
-    const tempItem = state.cart.find((i) => i.id === id + color)
+
+  if (action.type === ADD_TO_CART)  {
+ 
+    const {  product } = action.payload;
+    const tempItem = state.cart.find((i) => i.id === product.id )
     if (tempItem) {
-      const tempCart = state.cart.map((cartItem) => {
-        if (cartItem.id === id + color) {
-          let newAmount = cartItem.amount + amount
-          if (newAmount > cartItem.max) {
-            newAmount = cartItem.max
+      const tempCart = state.cart.map((item) => {
+        if (item.id === product.id) {
+          
+          let newAmount = item.amount + 1
+          if (newAmount > item.max) {
+            newAmount = item.max
           }
-          return { ...cartItem, amount: newAmount }
+          return { ...item, amount: newAmount }
         } else {
-          return cartItem
+          return item
         }
       })
       return { ...state, cart: tempCart }
     } else {
       const newItem = {
-        id: id + color,
+        id: product.id,
         name: product.name,
-        color,
-        amount,
-        image: product.images[0].url,
+        amount: 1,
+        image: product.image,
         price: product.price,
-        max: product.stock,
       }
       return { ...state, cart: [...state.cart, newItem] }
     }
+
   }
+
+  
+  if (action.type === INCREASE) {
+     let tempCart = state.cart.map(cartItem => {
+      if (cartItem.id === action.payload) {
+        return { ...cartItem, amount: cartItem.amount + 1 };
+      }
+      return cartItem;
+    });
+    return { ...state, cart: tempCart };
+  }
+  if (action.type === DECREASE) {
+    // return state.cart.map(item => {
+    //   return item.id === action.payload 
+    //   ? {...item,amount:item.amount - 1 }
+    //   : {...item};
+    //   });
+     let tempCart = state.cart.map(cartItem => {
+      if (cartItem.id === action.payload) {
+        cartItem = { ...cartItem, amount: cartItem.amount - 1 };
+      }
+      return cartItem;
+    });
+
+    return { ...state, cart: tempCart };
+  }
+  // if (action.type === REMOVE){
+  //   return state.cart.filter(item => item.id !== action.payload);
+    
+  // }
   if (action.type === REMOVE_CART_ITEM) {
     const tempCart = state.cart.filter((item) => item.id !== action.payload)
     return { ...state, cart: tempCart }

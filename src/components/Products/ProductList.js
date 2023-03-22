@@ -2,23 +2,25 @@ import React from 'react'
 import { useProductsContext } from '../../context/products_context'
 import Product from './Product'
 import styled from 'styled-components'
+ import Loading from '../Loading'
+  import Error from '../Error'
 
 const ProductList = () => {
-  const { products: products } = useProductsContext()
+  const { products,     products_loading: loading,
+    products_error: error, } = useProductsContext()
 
-  if (products.length < 1) {
-    return (
-      <h5 style={{ textTransform: 'none' }}>
-        Sorry, no products matched your search.
-      </h5>
-    )
+  if (loading) {
+    return <Loading />
+  }
+  if (error) {
+    return <Error />
   }
    return (
     <Wrapper >
-      {/* <h2 className="section-title">{title}</h2> */}
+      
       <div className="products-container">
-        {products.map(item => {
-          return <Product key={item.id} {...item} />
+        {products.map(product => {
+          return <Product key={product.id} {...product} />
         })}
       </div>
     </Wrapper>

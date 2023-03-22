@@ -2,46 +2,31 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 import { useCartContext } from '../../context/cart_context'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import AddToCart from '../Cart/AddToCart'
-import { useProductsContext } from '../../context/products_context'
+
 import { FaSearch } from 'react-icons/fa'
 
-const Product = ({image, name, price, id }) => {
-  //  const {
-  //   single_products: product
-  // } = useProductsContext();
-  //const { id } = useParams();
-  // const {
-  //   name,
-  //   price,
-  //   images,
-  // } = product;
-// const { image, name, price, id }  = product
-  //  const { addToCart } = useCartContext()
-  //  const {id} = product
+const Product = (product) => {
 
-  //const [amount, setAmount] = useState(1)
-  const history = useNavigate()
-  const redirect = path => {
-    history(path);
-  };
+  const navigate = useNavigate();
 
+const {image,name, price, id} = product
+
+const {addToCart} = useCartContext()
   return (
     <Wrapper>
       <div className='container'>
         <img src={image} alt={name} />
-        <Link to={`/${id}`} className='link'>
+        {/* <Link to={`/${id}`} className='link'>
           <FaSearch />
-        </Link>
-        {/* <button type='button' className='link' onClick={() => {addToCart(id, product)}}>Add To Cart</button> */}
-        {/* <AddToCart product={product}/> */}
-        {/* <Link
-          to='/cart'
-          className='link'
-          onClick={() => addToCart( id, amount, product)}
-        >
-          add to cart
         </Link> */}
+        <button type='button' className='link' onClick={() => {
+          addToCart(product);
+          //console.log(id,product, amount)
+          navigate("/cart");
+        }}
+        >
+          Add To Cart</button>
+       
          
       </div>
       <footer>
@@ -50,6 +35,7 @@ const Product = ({image, name, price, id }) => {
       </footer>
     </Wrapper>
   )
+      
 }
 const Wrapper = styled.article`
   .container {

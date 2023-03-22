@@ -3,14 +3,17 @@ import styled from 'styled-components'
 import AmountButtons from '../AmountButtons'
 import { FaTrash } from 'react-icons/fa'
 import { useCartContext } from '../../context/cart_context'
+import { FaPlus, FaMinus } from 'react-icons/fa'
+
 const CartItem = ({ id, image, name, price, amount }) => {
-  const { removeItem, toggleAmount } = useCartContext()
-  const increase = () => {
-    toggleAmount(id, 'inc')
-  }
-  const decrease = () => {
-    toggleAmount(id, 'dec')
-  }
+  const { removeItem, toggleAmount, increaseAmount, decreaseAmount } = useCartContext()
+  // const increase = () => {
+  //   toggleAmount(id, 'inc')
+  // }
+  // const decrease = () => {
+  //   toggleAmount(id, 'dec')
+  // }
+
   return (
     <Wrapper>
       <div className='title'>
@@ -22,16 +25,46 @@ const CartItem = ({ id, image, name, price, amount }) => {
         </div>
       </div>
       <h5 className='price'>{(price)}</h5>
-      <AmountButtons amount={amount} increase={increase} decrease={decrease} />
+     
+
+      <div className='amount-btns'>
+        <button type='button' className='amount-btn' onClick={() => {decreaseAmount(id, amount)}}>
+        <FaMinus />
+      </button>
+      <h2 className='amount'>{amount}</h2>
+      <button type='button' className='amount-btn' onClick={() => {increaseAmount(id)}}>
+        <FaPlus />
+      </button>
+
+      </div>
       <h5 className='subtotal'>{(price * amount)}</h5>
       <button className='remove-btn' onClick={() => removeItem(id)}>
         <FaTrash />
       </button>
     </Wrapper>
+    
   )
 }
 
 const Wrapper = styled.article`
+.amount-btns{
+  display: grid;
+  width: 140px;
+   justify-items: center;
+   grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+}
+button {
+    background: transparent;
+    border-color: transparent;
+    cursor: pointer;
+    padding: 1rem 0;
+    width: 2rem;
+    height: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .subtotal {
     display: none;
   }

@@ -6,7 +6,7 @@ import CartColumns from './CartColumns'
 import CartItem from './CartItem'
 
 const CartItems = () => {
-  const { cart, clearCart } = useCartContext()
+  const { cart, total, clearCart } = useCartContext()
 
   return (
     <Wrapper className='section section-center'>
@@ -15,6 +15,7 @@ const CartItems = () => {
         return <CartItem key={item.id} {...item} />
       })}
       <hr />
+      <h2>{total}</h2>
       <div className='link-container'>
         
         <button

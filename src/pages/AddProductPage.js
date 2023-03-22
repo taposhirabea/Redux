@@ -1,29 +1,37 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components'
+import { useProductsContext } from '../context/products_context';
 import {fs, storage} from '../firebase'
 
 export default function AddProductPage() {
+
+  const navigate = useNavigate()
+  // const redirect = path => {
+  //   navigate(path);
+  // };
+
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null);
   const [color, setColor] = useState('select');
-
-  const [imageError, setImageError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
-  const [uploadError, setUploadError] = useState('');
+  const [featured, setFeatured] = useState(true);
+ 
+  const [error, setError] = useState('');
 
   const types = ['image/jpg', 'image/jpeg', 'image/png', ' image/PNG']
+  
   const handleProductImg=(e) =>{
     let selectedFile = e.target.files[0];
     if(selectedFile){
       if(selectedFile && types.includes(selectedFile.type)){
         setImage(selectedFile);
-        setImageError('');
+        setError('');
       }
       else{
         setImage(null);
-        setImageError('enter a valid image path')
+        setError('enter a valid image path')
       }
     }
     else{
@@ -34,35 +42,44 @@ export default function AddProductPage() {
   setColor(e.target.value);
   console.log(color)
 }
+
+  // add product
   const handleAddProducts = (e) =>{
     e.preventDefault();
-    const uploadTask = storage.ref('product-images/${image.name}').put(image);
+
+    // storing the image
+    const uploadTask = storage.ref(`product-images/${image.name}`).put(image);
     uploadTask.on('state_changed', snapshot => {
-      const process = (snapshot.bytesTransferred/snapshot.totalBytes) * 100
-      console.log(process);
-    }, error => setUploadError(error.message), () => {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      console.log(progress);
+    }, err => {
+      setError(err.message)
+    }, () => {
+
+      // getting product url and if success then storing the product in the database
       storage.ref('product-images').child(image.name).getDownloadURL().then(url => {
-        fs.collection('products').add({
+        fs.collection('Products').add({
           name,
           description,
           price: Number(price),
           color,
-          url
+          image: url,
+          featured,
         }).then(() => {
-          setSuccessMsg('product added successfully');
           setName('');
           setDescription('');
           setPrice('');
           setColor('');
+          setFeatured();
+          setError('');
           document.getElementById('file').value='';
-          setImageError('');
-          setUploadError('');
-          setTimeout(() => {
-            setSuccessMsg('');
-          }, 3000)
-        }).catch (error => setUploadError(error.message));
+
+        }).catch (err => setError(err.message));
+        //navigate('/')
       })
     })
+    navigate('/')
+    
   }
   return (
     <Wrapper className='section-center'>
@@ -70,10 +87,7 @@ export default function AddProductPage() {
             <br></br>
             <h1>Add Products</h1>
             <hr></hr>        
-            {successMsg&&<>
-                <div className='success-msg'>{successMsg}</div>
-                <br></br>
-            </>} 
+
             <div className='add-center'>  
             <form autoComplete="off" className='form-group ' onSubmit={handleAddProducts}>
                 <label>Product Title</label>
@@ -100,37 +114,23 @@ export default function AddProductPage() {
                   <option value="#ff0000">Red</option>
                 </select>
                 
-                {imageError&&<>
-                    <br></br>
-                    <div className='error-msg'>{imageError}</div>
-                   
-                </>}
                 <br></br>           
                 <div className='submit'>
-                    <button type="submit" className='btn'>
+                    <button type="submit" className='btn' >
                         SUBMIT
                     </button>
                 </div>
             </form>
+            {error && <span>{error}</span>}
             </div>
-                {uploadError&&<>
-                    <br></br>
-                    <div className='error-msg'>{uploadError}</div>
-                    
-                </>}
+               
 
         </Wrapper>
   )
 }
 
 const Wrapper = styled.article`
- /* align-items: center;
-  justify-items: center;
-  display: block; */
-/* .add-center{
-  align-items: center;
-  justify-items: center;
-} */
+
 .submit{
   display: flex;
   justify-content: center;
