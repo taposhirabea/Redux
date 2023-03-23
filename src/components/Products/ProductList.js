@@ -6,15 +6,17 @@ import styled from 'styled-components'
   import Error from '../Error'
 
 const ProductList = () => {
-  const { products,     products_loading: loading,
-    products_error: error, } = useProductsContext()
+  // const { products,     products_loading: loading,
+  //   products_error: error, } = useProductsContext()
+  const { products, loading,
+     } = useProductsContext()
 
   if (loading) {
     return <Loading />
   }
-  if (error) {
-    return <Error />
-  }
+  // if (error) {
+  //   return <Error />
+  // }
    return (
     <Wrapper >
       

@@ -10,82 +10,92 @@ import {
   GET_PRODUCTS_BEGIN,
   GET_PRODUCTS_SUCCESS,
   GET_PRODUCTS_ERROR,
-  GET_SINGLE_PRODUCT_BEGIN,
-  GET_SINGLE_PRODUCT_SUCCESS,
-  GET_SINGLE_PRODUCT_ERROR,
+ 
   ADD_TO_CART,
 } from '../actions'
 
 const initialState = {
   isSidebarOpen: false,
-  products_loading: false,
-  products_error: false,
-  products: [],
-  single_product_loading: false,
-  single_product_error: false,
-  single_product: {},
+  // products_loading: false,
+  // products_error: false,
+  // products: [],
+  
 }
 
 const ProductsContext = React.createContext()
 
 export const ProductsProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState)
-
+  //const [state, dispatch] = useReducer(reducer, initialState)
+  const [loading, setLoading] = React.useState(false);
+  const [products, setProducts] = React.useState([]);
+  const [featured, setFeatured] = React.useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const openSidebar = () => {
-    dispatch({ type: SIDEBAR_OPEN })
+    //dispatch({ type: SIDEBAR_OPEN })
+    setIsSidebarOpen(true);
   }
   const closeSidebar = () => {
-    dispatch({ type: SIDEBAR_CLOSE })
+    //dispatch({ type: SIDEBAR_CLOSE })
+    setIsSidebarOpen(false);
   }
   
 const [todos, setTodos] = useState([]);
 
-  const fetchProducts = async (url) => {
-    dispatch({ type: GET_PRODUCTS_BEGIN })
-    try {
+  const fetchProducts = async () => {
+    // dispatch({ type: GET_PRODUCTS_BEGIN })
+    // try {
 
+    //   await getDocs(collection(fs, "Products"))
+    //         .then((querySnapshot)=>{               
+    //             const newData = querySnapshot.docs
+    //                 .map((doc) => ({...doc.data(), id:doc.id }));
+    //             setTodos(newData);                
+    //             console.log(todos, newData);
+
+    //             dispatch({ type: GET_PRODUCTS_SUCCESS, payload: newData })
+    //         })
+    //   //  const response = await axios.get(url)
+    //   // const products = response.data
+    //   //  dispatch({ type: GET_PRODUCTS_SUCCESS, payload: products })
+    // } catch (error) {
+    //   dispatch({ type: GET_PRODUCTS_ERROR })
+    // }
+
+    setLoading(true)
       await getDocs(collection(fs, "Products"))
             .then((querySnapshot)=>{               
                 const newData = querySnapshot.docs
                     .map((doc) => ({...doc.data(), id:doc.id }));
                 setTodos(newData);                
                 console.log(todos, newData);
-
-                dispatch({ type: GET_PRODUCTS_SUCCESS, payload: newData })
+                setLoading(false)
+                
+                const featured_products = newData.filter(
+                  (product) => product.featured === true
+                )
+                setProducts(newData)
+                setFeatured(featured_products)
+                setLoading(false)
             })
-      //  const response = await axios.get(url)
-      // const products = response.data
-      //  dispatch({ type: GET_PRODUCTS_SUCCESS, payload: products })
-    } catch (error) {
-      dispatch({ type: GET_PRODUCTS_ERROR })
-    }
   }
 
-  const fetchSingleProduct = async (url) => {
-    dispatch({ type: GET_SINGLE_PRODUCT_BEGIN })
-    try {
-      
-      
-      const response = await axios.get(url)
-      const singleProduct = response.data
-      dispatch({ type: GET_SINGLE_PRODUCT_SUCCESS, payload: singleProduct })
-    } catch (error) {
-      dispatch({ type: GET_SINGLE_PRODUCT_ERROR })
-    }
-  }
+
 
   useEffect(() => {
-    fetchProducts(url)
+    fetchProducts()
   }, [])
 
   return (
     <ProductsContext.Provider
       value={{
-        ...state,
+        // ...state,
+        isSidebarOpen,
         openSidebar,
         closeSidebar,
-        fetchSingleProduct,
-
+        
+        products,
+        loading,
+        featured,
       }}
     >
       {children}
